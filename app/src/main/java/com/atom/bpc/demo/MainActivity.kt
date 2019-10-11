@@ -133,6 +133,9 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
         if (country != null && protocol != null) {
             val vpnProperties: VPNProperties.Builder =
                 VPNProperties.Builder(country, protocol)
+
+
+
             bpcDemo?.atomManager?.connect(this, vpnProperties.build())
         } else {
             Toast.makeText(
@@ -170,7 +173,10 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
                     id: Long
                 ) {
                     if (position != 0)
-                        getProtocols(packageList?.get(position - 1)?.id)
+                        packageList?.get(position - 1)?.apply {
+                            populateProtocolsByPackage(this)
+                        }
+
                 }
 
                 override fun onNothingSelected(parentView: AdapterView<*>) {
@@ -203,18 +209,26 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
                 position: Int,
                 id: Long
             ) {
-                val protocol = protocolList?.get(position)?.protocol
+                val protocol = protocolList?.get(position)
                 if (packages.selectedItemPosition > 0) {
                     protocol?.apply {
-                        packageList?.get(packages.selectedItemPosition - 1)?.id?.let { packageId ->
-                            getCountries(
-                                packageId,
-                                protocol
-                            )
-                        }
+                        packageList?.get(packages.selectedItemPosition - 1)
+                            ?.let { selectedPackage ->
+                                populateCountriesByPackageAndProtocol(
+                                    selectedPackage,
+                                    this
+                                )
+
+                            }
                     }
                 } else {
-                    getCountries(protocol)
+                    val objectOfProtocol = protocolList?.first {
+                        it.protocol == "UDP"
+                    }
+                    objectOfProtocol?.apply {
+                        populateCountriesByProtocol(this)
+                    }
+
                 }
 
 
@@ -227,9 +241,9 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
         }
     }
 
-    private fun getCountries(protocol: String?) {
-        protocol?.apply {
-            bpcDemo?.atomBpcManager?.getCountriesByProtocol(protocol, {
+    private fun populateCountriesByProtocol(objectOfProtocol: Protocol) {
+        objectOfProtocol.apply {
+            bpcDemo?.atomBpcManager?.getCountriesByProtocol(objectOfProtocol, {
                 countryList = it
                 updateCountrySpinner()
 
@@ -271,24 +285,26 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
         countries.adapter = adapter
     }
 
-    fun getProtocols(packageId: String?) {
-        packageId?.apply {
-            bpcDemo?.atomBpcManager?.getProtocolsByPackage(packageId, {
+    fun populateProtocolsByPackage(objectOfPackage: Package) {
+        objectOfPackage.apply {
+            bpcDemo?.atomBpcManager?.getProtocolsByPackage(objectOfPackage, {
                 protocolList = it
                 updateProtocolSpinner()
 
             }, {
-                it.printStackTrace()
+
 
             })
         }
 
     }
 
-    fun getCountries(packageId: String, protocol: String) {
-
-        bpcDemo?.atomBpcManager?.getCountriesByPackageAndProtocol(packageId,
-            protocol, {
+    fun populateCountriesByPackageAndProtocol(
+        objectOfPackage: Package,
+        objectOfProtocol: Protocol
+    ) {
+        bpcDemo?.atomBpcManager?.getCountriesByPackageAndProtocol(objectOfPackage,
+            objectOfProtocol, {
                 countryList = it
                 updateCountrySpinner()
             }, {

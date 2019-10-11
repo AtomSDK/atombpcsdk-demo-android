@@ -8,20 +8,25 @@ import com.atom.sdk.android.AtomManager
 class BPCDemo : Application() {
 
 
+    companion object {
+        var SECRET_KEY:String = "YOUR SECRET KEY"
+    }
     var atomManager: AtomManager? = null
     var atomBpcManager: AtomBPCManager? = null
+
     lateinit var atomConfiguration: AtomConfiguration
     override fun onCreate() {
         super.onCreate()
 
         val atomConfiguration = AtomConfiguration.Builder(
-            "2a525ded0421ddbb6e166344bd514c1b"
+            SECRET_KEY
         ).build()
 
         AtomManager.initialize(this, atomConfiguration) {
             atomManager = it
 
         }
+
 
     }
 

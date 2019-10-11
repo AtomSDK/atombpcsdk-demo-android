@@ -6,30 +6,24 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.atom.bpc.AtomBPCManager
+import com.atom.bpc.demo.BPCDemo.Companion.SECRET_KEY
 import com.atom.core.models.AtomConfiguration
 
 class InitializeActivity : AppCompatActivity() {
-
-    private val key: String = "2a525ded0421ddbb6e166344bd514c1b"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_initialize)
 
         val atomConfiguration = AtomConfiguration.Builder(
-            key
+            SECRET_KEY
         ).build()
 
-        findViewById<TextView>(R.id.txt_key).text = key
+        findViewById<TextView>(R.id.txt_key).text = SECRET_KEY
         findViewById<Button>(R.id.btn_init).setOnClickListener {
-
-            AtomBPCManager.initialize(atomConfiguration, {
-                val bpcDemo = application as BPCDemo
-                bpcDemo.atomBpcManager = it
-                startActivity(Intent(this, AuthActivity::class.java))
-
-            }, {
-
-            })
+            val bpcManager = AtomBPCManager.initialize(atomConfiguration)
+            val bpcDemo = application as BPCDemo
+            bpcDemo.atomBpcManager = bpcManager
+            startActivity(Intent(this, AuthActivity::class.java))
 
         }
 
