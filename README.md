@@ -1,5 +1,3 @@
-
-
 # ATOM Business Policy Component SDK demo for Android
 
 This is a demo application that demonstrate how to use **BPC SDK** along with **ATOM SDK** 
@@ -12,7 +10,7 @@ BPC SDK provides the customizable inventory which enables you to offer different
 
  ## Compatibility
 * Compatible with Android 4.0/API Level: 14 (ICE_CREAM_SANDWICH) and later
-* Compatible with ATOM SDK Version 2.3.0 and onwards
+* Compatible with ATOM SDK Version 3.0.0 and onwards
 
 Add this to root **build.gradle** 
 
@@ -53,7 +51,7 @@ dependencies {
 
 Add Kotlin gradle plugin to project build.gradle
 ```
-classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.31"
+classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.71"
 ```
 
 Add Kotlin Android Extension plugin to app build.gradle
@@ -63,18 +61,20 @@ apply plugin: 'kotlin-android-extensions'
 ```
 Add Kotlin support to app build.gradle in dependencies
 ```
-implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.31"
+implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71"
 ```
 # Getting Started with the Code
 ## Initialization
 BPC SDK needs to be initialized with a “SecretKey” provided to you after you buy the subscription which is typically a hex-numeric literal.
 
 ``` Kotlin
-val atomConfiguration = AtomConfiguration.Builder(
-            "YOUR_SECRET_KEY"
-        ).build()
-        
-       val atomBpcManager = AtomBPCManager.initialize(atomConfiguration)
+// Start provider dependency for BPC SDK
+BPCInitProvider.start(this)
+
+val atomConfiguration = AtomConfiguration.Builder("YOUR_SECRET_KEY").build()
+
+// Initialize BPC SDK
+val atomBpcManager = AtomBPCManager.initialize(atomConfiguration)
 ```
 
 # How to get Inventory related to customer's Package
