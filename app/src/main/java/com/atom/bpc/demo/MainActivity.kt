@@ -12,6 +12,7 @@ import com.atom.bpc.demo.logger.Log
 import com.atom.bpc.demo.logger.LogFragment
 import com.atom.bpc.demo.logger.LogWrapper
 import com.atom.bpc.demo.logger.MessageOnlyLogFilter
+import com.atom.core.exceptions.AtomException
 import com.atom.core.models.Country
 import com.atom.core.models.Package
 import com.atom.core.models.Protocol
@@ -19,14 +20,13 @@ import com.atom.sdk.android.AtomManager
 import com.atom.sdk.android.ConnectionDetails
 import com.atom.sdk.android.VPNProperties
 import com.atom.sdk.android.VPNStateListener
-import com.atom.sdk.android.exceptions.AtomException
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), VPNStateListener {
     lateinit var logWrapper: LogWrapper
 
-    internal var logFragment: LogFragment? = null
+    private var logFragment: LogFragment? = null
     override fun onConnecting() {
         runOnUiThread {
             connect.text = "Connecting"
@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
     }
 
     override fun onDialError(p0: AtomException?, p1: ConnectionDetails?) {
+        Log.d("UTC", p0?.errorMessage)
     }
 
     override fun onDisconnected(p0: Boolean) {
@@ -67,9 +68,12 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
     }
 
     override fun onStateChange(p0: String?) {
-
         Log.d("state", p0)
 
+    }
+
+    override fun onUnableToAccessInternet(p0: AtomException?, p1: ConnectionDetails?) {
+        Log.d("UTB", "internet connection is not working")
     }
 
     var countryList: MutableList<Country>? = null
@@ -84,11 +88,11 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
         setContentView(R.layout.activity_main)
         bpcDemo = application as BPCDemo
         AtomManager.addVPNStateListener(this)
-        bpcDemo?.atomManager?.bindIKEVStateService(this)
-        initializeLogging()
-        getPackages()
-        getProtocols()
 
+        initializeLogging()
+
+        //populateProtocols()
+        getPackages()
 
         connect.setOnClickListener {
             val currentVpnStatus = bpcDemo?.atomManager?.getCurrentVpnStatus(this)
@@ -123,7 +127,7 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
             msgFilter.setNext(logFragment?.getLogView())
 
         val output = findViewById<ViewAnimator>(R.id.sample_output)
-        output.setDisplayedChild(1)
+        output.displayedChild = 1
 
     }
 
@@ -133,8 +137,6 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
         if (country != null && protocol != null) {
             val vpnProperties: VPNProperties.Builder =
                 VPNProperties.Builder(country, protocol)
-
-
 
             bpcDemo?.atomManager?.connect(this, vpnProperties.build())
         } else {
@@ -174,6 +176,8 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
                 ) {
                     if (position != 0)
                         packageList?.get(position - 1)?.apply {
+
+                            Log.e("time","time")
                             populateProtocolsByPackage(this)
                         }
 
@@ -193,8 +197,7 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
 
     }
 
-
-    private fun getProtocols() {
+    private fun populateProtocols() {
         bpcDemo?.atomBpcManager?.getProtocols({
             protocolList = it
             updateProtocolSpinner()
@@ -248,7 +251,7 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
                 updateCountrySpinner()
 
             }, {
-
+                Log.e("exc",it.errorMessage)
             })
 
         }
@@ -289,10 +292,11 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
         objectOfPackage.apply {
             bpcDemo?.atomBpcManager?.getProtocolsByPackage(objectOfPackage, {
                 protocolList = it
+                Log.e("time2","time2")
                 updateProtocolSpinner()
 
             }, {
-
+                Log.e("exc",it.errorMessage)
 
             })
         }
@@ -308,14 +312,13 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
                 countryList = it
                 updateCountrySpinner()
             }, {
-
+                Log.e("exc",it.errorMessage)
             })
 
 
     }
 
     override fun onDestroy() {
-        bpcDemo?.atomManager?.unBindIKEVStateService(this)
         AtomManager.removeVPNStateListener(this)
         super.onDestroy()
     }

@@ -2,6 +2,7 @@ package com.atom.bpc.demo
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.atom.sdk.android.VPNCredentials
@@ -14,10 +15,10 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
         bpcDemo = application as BPCDemo
+
         btn_auth.setOnClickListener {
             authentication()
         }
-
     }
 
     private fun navigateToConnectScreen() {
