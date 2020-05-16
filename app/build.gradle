@@ -10,8 +10,8 @@ android {
         applicationId "com.atom.bpc.demo"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 3
-        versionName "1.2.0"
+        versionCode 4
+        versionName "1.2.1"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -50,7 +50,7 @@ dependencies {
 
     implementation 'org.bitbucket.purevpn:purevpn-sdk-android:3.2.0'
 
-    implementation 'org.bitbucket.purevpn:android-bpc-sdk:1.2.0'
+    implementation 'org.bitbucket.purevpn:android-bpc-sdk:1.2.1'
 
 
     def lifecycle_version = "2.1.0"
