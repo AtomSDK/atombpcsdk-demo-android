@@ -176,8 +176,6 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
                 ) {
                     if (position != 0)
                         packageList?.get(position - 1)?.apply {
-
-                            Log.e("time","time")
                             populateProtocolsByPackage(this)
                         }
 
@@ -292,7 +290,6 @@ class MainActivity : AppCompatActivity(), VPNStateListener {
         objectOfPackage.apply {
             bpcDemo?.atomBpcManager?.getProtocolsByPackage(objectOfPackage, {
                 protocolList = it
-                Log.e("time2","time2")
                 updateProtocolSpinner()
 
             }, {
