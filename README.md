@@ -1,6 +1,6 @@
 # ATOM Business Policy Component SDK demo for Android
 
-This is a demo application that demonstrate how to use **BPC SDK** along with **ATOM SDK** 
+This is a demo application that demonstrate how to use **BPC SDK** along with **ATOM SDK**
 
 BPC SDK provides the customizable inventory which enables you to offer different sets of entities to your end-users with the help of customized *Packages* and *Groups*. BPC SDK will also provide *Custom Attributes* that you can associate with every byte of system related data e.g. Countries data is Atom's property but through BPC, you can add Custom Attributes to Country's object like flag icon etc which enables to stay back-end-free and BPC will serve as your customized back-end.
 
@@ -12,13 +12,13 @@ BPC SDK provides the customizable inventory which enables you to offer different
 * Compatible with Android 4.0/API Level: 14 (ICE_CREAM_SANDWICH) and later
 * Compatible with ATOM SDK Version 3.0.0 and onwards
 
-Add this to root **build.gradle** 
+Add this to root **build.gradle**
 
 # Setup
 To use this library you should add **jitpack** repository.
 Add **authToken=jp_l1hv3212tltdau845qago2l4e** in gradle.properties of your root project
 
-Add this to root **build.gradle** 
+Add this to root **build.gradle**
 ```gradle
     allprojects {
         repositories {
@@ -78,23 +78,21 @@ val atomBpcManager = AtomBPCManager.initialize(atomConfiguration)
 ```
 
 # How to get Inventory related to customer's Package
-BPC enables you to define and sell your customers your own choice of inventory by creating packages. Through BPC SDK, you can get complete inventory as well as get it filtered by your logged in customer's package. Following are some code examples to achieve the same: 
+BPC enables you to define and sell your customers your own choice of inventory by creating packages. Through BPC SDK, you can get complete inventory as well as get it filtered by your logged in customer's package. Following are some code examples to achieve the same:
 
 
 ### Get All packages
-Call this method to get all packages from your inventory 
+Call this method to get all packages from your inventory
 ```Kotlin
 bpcManager?.getPackages({packages->
-            //here you get the all the packages
+        //here you get the all the packages
         }, {
         // here you will get the exception
-        })
+})
 ```
 
-
-
 ### Get Countries filtered by Package
-This function will retrieve all countries that are associated with a particular package 
+This function will retrieve all countries that are associated with a particular package
 ```Kotlin
 bpcManager?.getCountriesByPackage(PackageObject, {
     // here you will get all the countries that are associated with this packages
@@ -104,7 +102,7 @@ bpcManager?.getCountriesByPackage(PackageObject, {
 ```
 
 ### Get Protocols filtered by Package
-This function will retrieve all protocols that are associated with a particular package 
+This function will retrieve all protocols that are associated with a particular package
 
 ```Kotlin
 bpcManager?.getProtocolsByPackage(PackageObject,{
@@ -114,17 +112,57 @@ bpcManager?.getProtocolsByPackage(PackageObject,{
 })
 ```
 
-
-# Some other functions that are helpful to retrieve common inventory items 
+# Some other functions that are helpful to retrieve common inventory items
 
 ### Get all Countries
 This function will provide the list of all countries present in your inventory
 ``` Kotlin
 bpcManager?.getCountries({countries->
-            //here you get the all the packages
+        //here you get the all the countries
+        }, {
+        // here you will get the exception
+})
+```
+
+
+### Get Physical Countries
+This function will provide the list of all physical countries present in your inventory
+``` Kotlin
+bpcManager?.getPhysicalCountries({countries->
+        //here you get the all the physical countries
+        }, {
+        // here you will get the exception
+})
+```
+
+
+### Get Virtual Countries
+This function will provide the list of all virtual countries present in your inventory
+``` Kotlin
+bpcManager?.getVirtualCountries({countries->
+            //here you get the all the virtual countries
         }, {
         // here you will get the exception
         })
+```
+
+### Determine if a Country is Virtual or Physical
+It can be determined by isVirtual property of country
+``` Kotlin
+val country = countries.first()
+val isVirtualCountry = country.isVirtual
+val isPhysicalCountry = !country.isVirtual
+```
+
+
+### Ping Countries
+This function will provide latency for countries and returns sorted collection in ascending order of measured latencies
+``` Kotlin
+countries.pingCountries({pingCountries ->
+            //here you get the country sorted collection in asceding order with latency
+            }, {
+            // here you will get the exception
+            })
 ```
 
 
@@ -132,11 +170,17 @@ bpcManager?.getCountries({countries->
 This function will provide you the list of countries that are mapped with a specific protocol
 ```kotlin
 bpcManager?.getCountriesByProtocol(protocolObject, {
-               //here you ill get the list of countires that supports provided protocol
+        //here you ill get the list of countires that supports provided protocol
+        }, {
+        // here you will get the exception
+})
+```
 
-            }, {
-                        // here you will get the exception
-            })
+### Features supported by a Country
+List of supported features (e.g. p2p) for a country can be obtained from supportedFeatures property
+```Kotlin
+val country = countries.first()
+val countryFeatures: MutableList<String> = country.supportedFeatures
 ```
 
 
@@ -144,20 +188,18 @@ bpcManager?.getCountriesByProtocol(protocolObject, {
 This function will provide the list of all cities present in your inventory
 ```kotlin
 bpcManager?.getCities({
-               //here you get the list of cities from the whole inventory 
-
-            }, {
-                        // here you will get the exception
-            })
+        //here you get the list of cities from the whole inventory
+        }, {
+        // here you will get the exception
+})
 ```
 
 ### Get cities by protocol
 This function will provide you the list of cities that are mapped with a specific protocol
 ```kotlin
 bpcManager?.getCitiesByProtocol(protocol, {
-               //here you get the list of cities that supported provided protocol
-
-            }, {
-                        // here you will get the exception
-            })
+        //here you get the list of cities that supported provided protocol
+        }, {
+        // here you will get the exception
+})
 ```
